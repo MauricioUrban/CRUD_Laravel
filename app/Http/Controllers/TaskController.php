@@ -22,7 +22,6 @@ class TaskController extends Controller
         //las paso a la vista index
         return view('index', ['tasks' => $tasks]);
     }
-
     /**
      * Va a mostrame la vista create
      * el metodo store para ejecutar la logica para almacenar el nuevo registro
@@ -33,49 +32,32 @@ class TaskController extends Controller
         return view('create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    // que retorne un Redirect 
     public function store(Request $request): RedirectResponse
     {
-        
-        //validar datos
         $request->validate([
             'title' => 'required',
             'description'=> 'required'
         ]);
-
-        //crea la tarea
         Task::create($request->all());
         //redirigime a index
         return redirect()->route('tasks.index')->with('success', 'Nueva tarea creada Exitonsamente!!');
-
-
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Task $task)
     {
-        //
     }
 
-    /**
-     * mostramos el formulario y en el update tenemos la logica
-     */
+    // mostramos el formulario y en el update tenemos la logica
     public function edit(Task $task): View
     {
         //le paso task a la vista
-        
+                             //mando la tarea a la vista, asi la puedo usar
+                   // tasks/1/edit es la url a usar              
         return view('edit', ['task' => $task]);
-        
+        //dd($task);
         }
 
-    /**
-     * Aca tenemos la logica para modificar y con edit lo mostramos
-     */
+        // Aca tenemos la logica para modificar y con edit lo mostramos
     public function update(Request $request, Task $task): RedirectResponse
     {
         //validar datos
@@ -83,19 +65,14 @@ class TaskController extends Controller
             'title' => 'required',
             'description'=> 'required'
         ]);
-
         //a $task lo quiero actualizar con los datos que vienen en la query ($request)
         $task->update($request->all());
-
         return redirect()->route('tasks.index')->with('success', 'Nueva tarea Actualizada Exitonsamente!!');
-
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Task $task)
+    //remover la task
+    public function destroy(Task $task): RedirectResponse
     {
-        //
+        $task->delete();
+        return redirect()->route('tasks.index')->with('success', 'Nueva tarea ELIMINADA Exitonsamente!!');
     }
 }
